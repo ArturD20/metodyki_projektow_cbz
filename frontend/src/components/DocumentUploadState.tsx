@@ -1,4 +1,5 @@
 import { FileUp, Upload } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { DocumentUploadInfo } from "@/components/DocumentUploadInfo";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,8 @@ export function DocumentUploadState({
   onAddDocuments,
   errors,
 }: DocumentUploadStateProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="my-auto flex w-full shrink-0 flex-col items-center gap-5 text-center">
       <div className="button-raised flex size-24 items-center justify-center rounded-[28px] border text-primary">
@@ -22,14 +25,17 @@ export function DocumentUploadState({
           id="main-content-title"
           className="text-[22px] leading-snug tracking-tight sm:text-[28px]"
         >
-          Upuść pliki tutaj, aby przesłać
+          <span className="pointer-coarse:hidden">{t("upload.dropHere")}</span>
+          <span className="hidden pointer-coarse:inline">
+            {t("upload.addDocuments")}
+          </span>
         </h2>
         <div
           aria-hidden="true"
-          className="mt-[12px] flex items-center gap-[16px] text-[18px] text-muted-foreground"
+          className="mt-[12px] flex items-center gap-[16px] text-[18px] text-muted-foreground pointer-coarse:hidden"
         >
           <span className="h-px flex-1 bg-border" />
-          lub
+          {t("upload.or")}
           <span className="h-px flex-1 bg-border" />
         </div>
       </div>
@@ -40,7 +46,7 @@ export function DocumentUploadState({
         className="min-h-[56px] w-full max-w-[360px] gap-3 rounded-2xl px-3 py-3 text-[16px] font-bold whitespace-normal sm:px-6 sm:text-[18px]"
       >
         <Upload aria-hidden="true" className="hidden size-[24px] sm:block" />
-        Prześlij z urządzenia
+        {t("upload.fromDevice")}
       </Button>
       <DocumentUploadInfo errors={errors} />
     </div>

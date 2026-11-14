@@ -1,4 +1,5 @@
 import { FileText } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { PdfThumbnail } from "@/components/PdfThumbnail";
 
@@ -11,9 +12,11 @@ export function DocumentAttachmentPreview({
   file,
   number,
 }: DocumentAttachmentPreviewProps) {
+  const { t } = useTranslation();
+
   return (
     <figure
-      aria-label={`Podgląd dokumentu ${number}`}
+      aria-label={t("document.preview", { number })}
       className="document-paper relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-xl"
     >
       <FileText

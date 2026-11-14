@@ -1,5 +1,6 @@
-import { ChevronsRight, FileText } from "lucide-react";
+import { ChevronsRight, CircleDashed, FileText } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -7,11 +8,19 @@ import { cn } from "@/lib/utils";
 const sections = [
   {
     id: "documents",
-    label: "Dokumenty",
+    labelKey: "nav.documents",
     marker: <FileText className="size-5 lg:size-6" />,
   },
-  { id: "section-2", label: "Sekcja 2", marker: "2" },
-  { id: "section-3", label: "Sekcja 3", marker: "3" },
+  {
+    id: "section-2",
+    labelKey: "nav.section2",
+    marker: <CircleDashed className="size-5 lg:size-6" />,
+  },
+  {
+    id: "section-3",
+    labelKey: "nav.section3",
+    marker: <CircleDashed className="size-5 lg:size-6" />,
+  },
 ] as const;
 
 export type MainSection = (typeof sections)[number]["id"];
@@ -36,6 +45,7 @@ export function MainNav({
   onExpandedChange,
   onSectionChange,
 }: MainNavProps) {
+  const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const navTransition = reducedMotion
     ? { duration: 0 }
@@ -56,9 +66,30 @@ export function MainNav({
       }}
       transition={navTransition}
       id="main-nav"
-      aria-label="Nawigacja główna"
-      className="glass-surface order-last mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex shrink-0 flex-row gap-1 rounded-[28px] p-1.5 sm:mx-5 lg:order-none lg:mx-0 lg:mb-0 lg:w-[calc(var(--nav-width)+4px)] lg:min-w-0 lg:flex-col lg:gap-2 lg:self-center lg:p-2"
+      aria-label={t("nav.label")}
+      className="glass-surface order-last mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex shrink-0 flex-row gap-1 rounded-[28px] p-1.5 sm:mx-5 lg:order-none lg:mx-0 lg:mb-0 lg:w-[calc(var(--nav-width)+4px)] lg:min-w-0 lg:flex-col lg:gap-2 lg:p-2"
     >
+      <div
+        aria-hidden="true"
+        className="mb-2 hidden h-14 shrink-0 items-center overflow-hidden select-none lg:flex"
+      >
+        <span className="grid size-14 shrink-0 place-items-center">
+          <img
+            src="/favicon.svg"
+            alt=""
+            draggable={false}
+            className="size-11"
+          />
+        </span>
+        <motion.span
+          initial={false}
+          animate={{ opacity: expanded ? 1 : 0, x: expanded ? 0 : -8 }}
+          transition={labelTransition}
+          className="min-w-0 flex-1 truncate pr-4 font-logo text-[30px] leading-none text-foreground"
+        >
+          {t("appName")}
+        </motion.span>
+      </div>
       {sections.map((section) => (
         <Button
           key={section.id}
@@ -78,26 +109,26 @@ export function MainNav({
           >
             {section.marker}
           </span>
-          <span className="lg:hidden">{section.label}</span>
+          <span className="lg:hidden">{t(section.labelKey)}</span>
           <motion.span
             initial={false}
             animate={{ opacity: expanded ? 1 : 0, x: expanded ? 0 : -8 }}
             transition={labelTransition}
             className="hidden min-w-0 flex-1 truncate pr-4 text-left text-base lg:block"
           >
-            {section.label}
+            {t(section.labelKey)}
           </motion.span>
         </Button>
       ))}
-      <div className="ml-px hidden size-14 shrink-0 place-items-center lg:grid">
+      <div className="ml-px hidden size-14 shrink-0 place-items-center lg:mt-auto lg:grid">
         <Button
           type="button"
           variant="outline"
           size="icon"
           aria-expanded={expanded}
           aria-controls="main-nav"
-          aria-label={expanded ? "Zwiń nawigację" : "Rozwiń nawigację"}
-          title={expanded ? "Zwiń nawigację" : "Rozwiń nawigację"}
+          aria-label={expanded ? t("nav.collapse") : t("nav.expand")}
+          title={expanded ? t("nav.collapse") : t("nav.expand")}
           onClick={() => onExpandedChange(!expanded)}
           className="size-[44px] rounded-2xl"
         >

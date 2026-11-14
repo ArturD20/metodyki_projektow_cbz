@@ -1,5 +1,6 @@
 import { Plus, X } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import { DocumentCard } from "@/components/DocumentCard";
 import { DocumentUploadInfo } from "@/components/DocumentUploadInfo";
@@ -29,6 +30,7 @@ export function DocumentDrawer({
   onClose,
   onAddDocuments,
 }: DocumentDrawerProps) {
+  const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -83,14 +85,14 @@ export function DocumentDrawer({
       >
         <div className="flex items-center justify-between gap-3 px-5 pb-4">
           <h2 id="document-drawer-title" className="text-[22px]">
-            Dokumenty
+            {t("nav.documents")}
           </h2>
           <Button
             ref={closeRef}
             type="button"
             variant="outline"
             size="icon"
-            aria-label="Zamknij"
+            aria-label={t("upload.close")}
             onClick={onClose}
             className="size-11 rounded-2xl"
           >
@@ -103,7 +105,7 @@ export function DocumentDrawer({
           </div>
         )}
         <ul
-          aria-label="Dodane dokumenty"
+          aria-label={t("upload.addedDocuments")}
           className="styled-scrollbar flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-4"
         >
           {documents.map((file, index) => (
@@ -121,7 +123,7 @@ export function DocumentDrawer({
             className="min-h-12 w-full rounded-2xl px-3 py-3 text-[16px] font-bold whitespace-normal"
           >
             <Plus aria-hidden="true" className="size-5" />
-            Dodaj dokument
+            {t("upload.addDocument")}
           </Button>
         </div>
       </div>

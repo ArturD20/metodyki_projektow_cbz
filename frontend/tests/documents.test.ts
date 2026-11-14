@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { validateDocuments } from "../src/lib/documents";
+import { MAX_DOCUMENT_SIZE_MB, validateDocuments } from "../src/lib/documents";
 
 describe("document upload validation", () => {
   test("accepts Word and PDF files, including uppercase extensions and empty MIME types", () => {
@@ -25,11 +25,12 @@ describe("document upload validation", () => {
     const result = validateDocuments(files);
 
     expect(result.accepted).toEqual([]);
-    expect(result.errors).toHaveLength(4);
-    files.forEach((file, index) => {
-      expect(result.errors[index]).toContain(file.name);
-      expect(result.errors[index]).toContain("DOC, DOCX lub PDF");
-    });
+    expect(result.errors).toEqual(
+      files.map((file) => ({
+        key: "errors.unsupportedType",
+        name: file.name,
+      })),
+    );
   });
 
   test("accepts a file at 10 MB and rejects one byte above the per-file limit", () => {
@@ -44,9 +45,13 @@ describe("document upload validation", () => {
     const result = validateDocuments([atLimit, overLimit]);
 
     expect(result.accepted).toEqual([atLimit]);
-    expect(result.errors).toHaveLength(1);
-    expect(result.errors[0]).toContain("za-duży.pdf");
-    expect(result.errors[0]).toContain("10 MB");
+    expect(result.errors).toEqual([
+      {
+        key: "errors.tooLarge",
+        name: "za-duży.pdf",
+        maxSize: MAX_DOCUMENT_SIZE_MB,
+      },
+    ]);
   });
 
   test("applies the size limit per file rather than to the whole selection", () => {
@@ -64,8 +69,9 @@ describe("document upload validation", () => {
     const result = validateDocuments([first, invalid, second]);
 
     expect(result.accepted).toEqual([first, second]);
-    expect(result.errors).toHaveLength(1);
-    expect(result.errors[0]).toContain("zdjęcie.jpg");
+    expect(result.errors).toEqual([
+      { key: "errors.unsupportedType", name: "zdjęcie.jpg" },
+    ]);
   });
 
   test("handles an empty selection without errors", () => {

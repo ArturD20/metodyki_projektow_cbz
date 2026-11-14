@@ -1,39 +1,37 @@
 import { ArrowUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
+import type { DocumentExplanation } from "@/api/explain";
 import { DocumentAttachmentPreview } from "@/components/DocumentAttachmentPreview";
 import { DocumentCard } from "@/components/DocumentCard";
 import { Button } from "@/components/ui/button";
 
-const sampleExplanations = [
-  {
-    summary:
-      "Urząd prosi o uzupełnienie wniosku. Brakuje podpisanego formularza i potwierdzenia opłaty.",
-    detail: "Dokumenty trzeba dostarczyć do 20 listopada.",
-  },
-  {
-    summary: "To lista załączników, które trzeba dołączyć do wniosku.",
-    detail: "Sprawdź, czy masz podpisany formularz i potwierdzenie opłaty.",
-  },
-];
+export function DocumentExplainedState({
+  documents,
+  explanations,
+}: {
+  documents: File[];
+  explanations: DocumentExplanation[];
+}) {
+  const { t } = useTranslation();
 
-export function DocumentExplainedState({ documents }: { documents: File[] }) {
   return (
     <section
       aria-labelledby="document-explanations-title"
       className="reading-surface @container isolate grid min-h-0 min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-[24px] [--chat-inset:16px] sm:[--chat-inset:24px] lg:[--chat-inset:32px]"
     >
       <h2 id="document-explanations-title" className="sr-only">
-        Wyjaśnienia dokumentów
+        {t("explain.explanationsTitle")}
       </h2>
       <div className="styled-scrollbar col-start-1 row-start-1 min-h-0 min-w-0 scroll-pb-[144px] overflow-y-auto px-[var(--chat-inset)] pt-[var(--chat-inset)] pb-[calc(144px+var(--chat-inset))]">
         <div className="mx-auto w-full max-w-[680px]">
           <p className="mb-[20px] hidden text-[12px] text-muted-foreground lg:block">
-            Przykładowe wyjaśnienia
+            {t("explain.explanations")}
           </p>
           <div className="space-y-8 lg:space-y-[52px]">
             {documents.map((file, index) => {
-              const explanation =
-                sampleExplanations[index % sampleExplanations.length];
+              const explanation = explanations[index];
+              if (!explanation) return null;
 
               return (
                 <article
@@ -55,13 +53,11 @@ export function DocumentExplainedState({ documents }: { documents: File[] }) {
                     <h3 className="text-[18px] leading-snug wrap-anywhere @[500px]:text-[20px]">
                       {file.name}
                     </h3>
-                    <p className="mt-[12px] text-[16px] leading-[26px] @[500px]:text-[18px]">
-                      {explanation.summary}
+                    <p className="mt-[12px] text-[16px] leading-[26px] whitespace-pre-wrap @[500px]:text-[18px]">
+                      {explanation.explanation}
                     </p>
                   </div>
-                  <p className="col-span-2 text-[16px] leading-[26px] lg:col-span-1 lg:@[360px]:col-span-2 lg:@[500px]:text-[18px]">
-                    {explanation.detail}
-                  </p>
+                  <ExplanationDetails explanation={explanation} />
                 </article>
               );
             })}
@@ -72,13 +68,13 @@ export function DocumentExplainedState({ documents }: { documents: File[] }) {
         <div className="chat-composer pointer-events-auto relative mx-auto flex w-full max-w-[680px] min-w-0 items-center gap-[8px] rounded-full py-[4px] pr-[4px] pl-[16px] focus-within:outline-2 focus-within:outline-offset-3 focus-within:outline-ring">
           <input
             type="text"
-            aria-label="Zapytaj o dokumenty"
-            placeholder="Zapytaj o dokumenty..."
+            aria-label={t("explain.ask")}
+            placeholder={t("explain.askPlaceholder")}
             className="min-h-9 min-w-0 flex-1 bg-transparent text-[16px] outline-none placeholder:text-muted-foreground"
           />
           <Button
             type="button"
-            aria-label="Wyślij pytanie"
+            aria-label={t("explain.send")}
             size="icon"
             className="size-[36px] rounded-full mr-1"
           >
@@ -87,5 +83,39 @@ export function DocumentExplainedState({ documents }: { documents: File[] }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function ExplanationDetails({
+  explanation,
+}: {
+  explanation: DocumentExplanation;
+}) {
+  const { t } = useTranslation();
+  const sections = [
+    [t("explain.actions"), explanation.action_checklist],
+    [t("explain.deadlines"), explanation.deadlines],
+    [t("explain.passages"), explanation.source_passages],
+  ] as const;
+  const visibleSections = sections.filter(([, items]) => items.length > 0);
+  if (visibleSections.length === 0) return null;
+
+  return (
+    <div className="col-span-2 space-y-4 text-[16px] leading-[26px] lg:col-span-1 lg:@[360px]:col-span-2 lg:@[500px]:text-[18px]">
+      {visibleSections.map(([title, items]) => (
+        <div key={title}>
+          <h4 className="text-[15px] leading-6 text-muted-foreground">
+            {title}
+          </h4>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            {items.map((item, index) => (
+              <li key={index} className="wrap-anywhere">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
   );
 }

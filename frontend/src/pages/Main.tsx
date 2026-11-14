@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   DocumentAttachmentsState,
@@ -9,48 +10,55 @@ import { DocumentUploadState } from "@/components/DocumentUploadState";
 import { Header } from "@/components/Header";
 import { MainNav, type MainSection } from "@/components/MainNav";
 import {
+  explainErrorMessage,
+  useExplainDocuments,
+} from "@/hooks/useExplainDocuments";
+import {
   DOCUMENT_EXTENSIONS,
   MAX_DOCUMENT_SIZE_MB,
   validateDocuments,
+  type DocumentUploadError,
 } from "@/lib/documents";
 import { cn } from "@/lib/utils";
 
 export function Main() {
+  const { t } = useTranslation();
   const [activeSection, setActiveSection] = useState<MainSection>("documents");
   const [documents, setDocuments] = useState<File[]>([]);
   const [documentsOpen, setDocumentsOpen] = useState(false);
-  const [uploadErrors, setUploadErrors] = useState<string[]>([]);
-  const [explanationStatus, setExplanationStatus] =
-    useState<DocumentExplanationStatus>("ready");
-  const explanationTimerRef = useRef<number | undefined>(undefined);
+  const [uploadErrors, setUploadErrors] = useState<DocumentUploadError[]>([]);
+  const explainDocuments = useExplainDocuments();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [navExpanded, setNavExpanded] = useState(true);
   const isUploadState = activeSection === "documents" && documents.length === 0;
   const showDocumentDrawerButton =
     activeSection === "documents" && documents.length > 0;
 
-  useEffect(() => () => window.clearTimeout(explanationTimerRef.current), []);
-
   const closeDocuments = useCallback(() => setDocumentsOpen(false), []);
-
-  const explainDocuments = () => {
-    if (documents.length === 0 || explanationStatus === "loading") return;
-
-    setExplanationStatus("loading");
-    explanationTimerRef.current = window.setTimeout(() => {
-      setExplanationStatus("explained");
-      explanationTimerRef.current = undefined;
-    }, 5200);
-  };
+  const explanationStatus: DocumentExplanationStatus =
+    explainDocuments.isPending
+      ? "loading"
+      : explainDocuments.isSuccess
+        ? "explained"
+        : "ready";
+  const visibleErrors = [
+    ...uploadErrors.map((error) =>
+      t(error.key, {
+        name: error.name,
+        maxSize: error.key === "errors.tooLarge" ? error.maxSize : undefined,
+      }),
+    ),
+    ...(explainDocuments.isError
+      ? [explainErrorMessage(explainDocuments.error)]
+      : []),
+  ];
 
   const addDocuments = (files: File[]) => {
     if (files.length === 0) return;
 
     const { accepted, errors } = validateDocuments(files);
     if (accepted.length > 0) {
-      window.clearTimeout(explanationTimerRef.current);
-      explanationTimerRef.current = undefined;
-      setExplanationStatus("ready");
+      explainDocuments.reset();
       setDocuments((previous) => [...previous, ...accepted]);
     }
     setUploadErrors(errors);
@@ -59,15 +67,16 @@ export function Main() {
   return (
     <>
       <p id="document-upload-requirements" className="sr-only">
-        Dozwolone formaty: {DOCUMENT_EXTENSIONS.join(", ").toUpperCase()}.
-        Maksymalny rozmiar pliku: {MAX_DOCUMENT_SIZE_MB} MB.
+        {`${t("upload.formats", {
+          formats: DOCUMENT_EXTENSIONS.join(", ").toUpperCase(),
+        })}. ${t("upload.maxSize", { maxSize: MAX_DOCUMENT_SIZE_MB })}.`}
       </p>
       <input
         ref={fileInputRef}
         type="file"
         accept={DOCUMENT_EXTENSIONS.join(",")}
         multiple
-        aria-label="Dodaj dokumenty"
+        aria-label={t("upload.addDocuments")}
         aria-describedby="document-upload-requirements"
         className="hidden"
         onChange={(event) => {
@@ -107,7 +116,7 @@ export function Main() {
               }
               aria-label={
                 activeSection === "documents" && documents.length > 0
-                  ? "Dokumenty"
+                  ? t("nav.documents")
                   : undefined
               }
               onDragOver={(event) => {
@@ -136,19 +145,24 @@ export function Main() {
                   <DocumentAttachmentsState
                     documents={documents}
                     onAddDocuments={() => fileInputRef.current?.click()}
-                    errors={uploadErrors}
+                    errors={visibleErrors}
+                    explanations={explainDocuments.data ?? []}
                     explanationStatus={explanationStatus}
-                    onExplainDocuments={explainDocuments}
+                    onExplainDocuments={() =>
+                      explainDocuments.mutate(documents)
+                    }
                   />
                 ) : (
                   <DocumentUploadState
                     onAddDocuments={() => fileInputRef.current?.click()}
-                    errors={uploadErrors}
+                    errors={visibleErrors}
                   />
                 )
               ) : (
                 <h2 id="main-content-title" className="text-lg lg:text-[22px]">
-                  {activeSection === "section-2" ? "Sekcja 2" : "Sekcja 3"}
+                  {activeSection === "section-2"
+                    ? t("nav.section2")
+                    : t("nav.section3")}
                 </h2>
               )}
             </section>
@@ -158,7 +172,7 @@ export function Main() {
       <DocumentDrawer
         open={documentsOpen}
         documents={documents}
-        errors={uploadErrors}
+        errors={visibleErrors}
         onClose={closeDocuments}
         onAddDocuments={() => fileInputRef.current?.click()}
       />

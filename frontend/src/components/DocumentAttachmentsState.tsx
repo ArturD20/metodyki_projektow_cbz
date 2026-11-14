@@ -1,6 +1,8 @@
 import { Plus } from "lucide-react";
 import { lazy, Suspense } from "react";
+import { useTranslation } from "react-i18next";
 
+import type { DocumentExplanation } from "@/api/explain";
 import { DocumentCard } from "@/components/DocumentCard";
 import { DocumentExplainedState } from "@/components/DocumentExplainedState";
 import { DocumentExplanationReadyState } from "@/components/DocumentExplanationReadyState";
@@ -19,6 +21,7 @@ type DocumentAttachmentsStateProps = {
   documents: File[];
   onAddDocuments: () => void;
   errors: string[];
+  explanations: DocumentExplanation[];
   explanationStatus: DocumentExplanationStatus;
   onExplainDocuments: () => void;
 };
@@ -27,9 +30,12 @@ export function DocumentAttachmentsState({
   documents,
   onAddDocuments,
   errors,
+  explanations,
   explanationStatus,
   onExplainDocuments,
 }: DocumentAttachmentsStateProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col gap-4 lg:flex-row lg:gap-5">
       {errors.length > 0 && (
@@ -40,13 +46,13 @@ export function DocumentAttachmentsState({
       <div className="glass-surface hidden min-h-0 min-w-0 flex-col rounded-[24px] p-5 lg:flex lg:w-2/5 lg:max-w-[456px] lg:flex-none">
         <div className="mb-[16px] flex shrink-0 items-center justify-between gap-3">
           <h2 id="main-content-title" className="text-[20px]">
-            Dokumenty
+            {t("nav.documents")}
           </h2>
           <Button
             type="button"
             variant="outline"
             size="icon-sm"
-            aria-label="Dodaj dokumenty"
+            aria-label={t("upload.addDocuments")}
             aria-describedby="document-upload-requirements"
             onClick={onAddDocuments}
             className="size-10 rounded-xl text-primary"
@@ -58,7 +64,7 @@ export function DocumentAttachmentsState({
           <DocumentUploadInfo errors={errors} />
         </div>
         <ul
-          aria-label="Dodane dokumenty"
+          aria-label={t("upload.addedDocuments")}
           className="styled-scrollbar -mr-5 grid min-h-0 flex-1 grid-cols-[repeat(auto-fill,minmax(min(100%,172px),1fr))] content-start gap-4 overflow-y-auto py-0.5 pr-5 pl-0.5"
         >
           {documents.map((file, index) => (
@@ -76,8 +82,8 @@ export function DocumentAttachmentsState({
               className="min-h-12 w-full rounded-2xl px-3 py-3 text-[15px] font-bold whitespace-normal"
             >
               {explanationStatus === "loading"
-                ? "Wyjaśniam dokumenty…"
-                : "Wyjaśnij dokumenty"}
+                ? t("explain.pending")
+                : t("explain.action")}
             </Button>
           </div>
         )}
@@ -94,7 +100,7 @@ export function DocumentAttachmentsState({
               role="status"
               className="reading-surface flex min-h-0 flex-1 items-center justify-center rounded-[24px] p-6"
             >
-              Wyjaśniam dokumenty…
+              {t("explain.pending")}
             </div>
           }
         >
@@ -102,7 +108,10 @@ export function DocumentAttachmentsState({
         </Suspense>
       )}
       {explanationStatus === "explained" && (
-        <DocumentExplainedState documents={documents} />
+        <DocumentExplainedState
+          documents={documents}
+          explanations={explanations}
+        />
       )}
     </div>
   );

@@ -1,0 +1,68 @@
+{
+  "appName": "ProsteFakty",
+  "nav": {
+    "label": "Main navigation",
+    "documents": "Documents",
+    "section2": "Section 2",
+    "section3": "Section 3",
+    "collapse": "Collapse navigation",
+    "expand": "Expand navigation"
+  },
+  "theme": {
+    "light": "Switch to light theme",
+    "dark": "Switch to dark theme"
+  },
+  "header": {
+    "showDocuments": "Show documents"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "upload": {
+    "dropHere": "Drop files here to upload",
+    "addDocuments": "Add documents",
+    "addDocument": "Add document",
+    "or": "or",
+    "fromDevice": "Upload from device",
+    "formats": "Allowed formats: {{formats}}",
+    "maxSize": "Maximum file size: {{maxSize}} MB",
+    "someRejected": "Some files were not added",
+    "addedDocuments": "Added documents",
+    "close": "Close"
+  },
+  "explain": {
+    "action": "Explain documents",
+    "pending": "Explaining documents…",
+    "preparing": "Preparing document explanations",
+    "soon": "The key information will appear in a moment.",
+    "readyTitle": "Documents ready to explain",
+    "readyBody": "Click “$t(explain.action)” to find out what the uploaded letters mean.",
+    "simpleTitle": "Plain explanation",
+    "simpleDescription": "The most important information from the documents.",
+    "stepsTitle": "Next steps",
+    "stepsDescription": "What to do next.",
+    "deadlinesTitle": "Important dates",
+    "deadlinesDescription": "What to watch for.",
+    "explanationsTitle": "Document explanations",
+    "explanations": "Explanations",
+    "ask": "Ask about the documents",
+    "askPlaceholder": "Ask about the documents...",
+    "send": "Send question",
+    "actions": "What to do",
+    "deadlines": "Deadlines",
+    "passages": "Passages from the letter"
+  },
+  "document": {
+    "label": "Document {{number}}: {{name}}",
+    "preview": "Preview of document {{number}}",
+    "file": "FILE"
+  },
+  "errors": {
+    "unsupportedType": "“{{name}}”: choose a DOC, DOCX, or PDF file.",
+    "tooLarge": "“{{name}}”: file exceeds the maximum size of {{maxSize}} MB.",
+    "pdfOnly": "“{{name}}”: only a PDF file can be explained for now.",
+    "noText": "“{{name}}”: no text to explain.",
+    "offline": "Cannot connect to the server.",
+    "explainFailed": "Could not explain the documents."
+  }
+}

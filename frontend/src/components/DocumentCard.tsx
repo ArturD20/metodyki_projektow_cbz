@@ -1,4 +1,5 @@
 import { FileText } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { PdfThumbnail } from "@/components/PdfThumbnail";
 import { cn } from "@/lib/utils";
@@ -16,11 +17,12 @@ export function DocumentCard({
   variant = "grid",
   compact = false,
 }: DocumentCardProps) {
+  const { t, i18n } = useTranslation();
   const extension = file.name.includes(".")
     ? file.name.split(".").at(-1)?.toUpperCase()
-    : "PLIK";
+    : t("document.file");
   const title = file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ");
-  const size = new Intl.NumberFormat("pl-PL", {
+  const size = new Intl.NumberFormat(i18n.language, {
     style: "unit",
     unit: file.size < 1024 * 1024 ? "kilobyte" : "megabyte",
     maximumFractionDigits: 1,
@@ -29,7 +31,9 @@ export function DocumentCard({
   return (
     <article
       aria-hidden={compact || undefined}
-      aria-label={compact ? undefined : `Dokument ${number}: ${file.name}`}
+      aria-label={
+        compact ? undefined : t("document.label", { number, name: file.name })
+      }
       className="min-w-0"
     >
       <div

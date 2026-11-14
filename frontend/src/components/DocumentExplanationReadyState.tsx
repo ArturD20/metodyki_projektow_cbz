@@ -1,5 +1,6 @@
 import { MessagesSquare } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   AnimatedExplanationIcon,
@@ -17,26 +18,27 @@ const explanationDetails = [
   {
     icon: "file",
     arc: { x: 100, length: 0.36, offset: -0.07, expandedOffset: 0.025 },
-    title: "Proste wyjaśnienie",
-    description: "Najważniejsze informacje z dokumentów.",
+    titleKey: "explain.simpleTitle",
+    descriptionKey: "explain.simpleDescription",
   },
   {
     icon: "checks",
     arc: { x: 300, length: 0.29, offset: -0.605, expandedOffset: -0.51 },
-    title: "Kolejne kroki",
-    description: "Co trzeba zrobić dalej.",
+    titleKey: "explain.stepsTitle",
+    descriptionKey: "explain.stepsDescription",
   },
   {
     icon: "calendar",
     arc: { x: 500, length: 0.29, offset: -0.105, expandedOffset: -0.01 },
-    title: "Ważne terminy",
-    description: "Na co zwrócić uwagę.",
+    titleKey: "explain.deadlinesTitle",
+    descriptionKey: "explain.deadlinesDescription",
   },
 ] as const;
 
 export function DocumentExplanationReadyState({
   onExplainDocuments,
 }: DocumentExplanationReadyStateProps) {
+  const { t } = useTranslation();
   const [hoveredIcon, setHoveredIcon] = useState<ExplanationIconName | null>(
     null,
   );
@@ -57,11 +59,10 @@ export function DocumentExplanationReadyState({
           id="document-explanation-title"
           className="mx-auto max-w-[460px] text-[22px] leading-snug tracking-tight sm:text-[26px]"
         >
-          Dokumenty gotowe do wyjaśnienia
+          {t("explain.readyTitle")}
         </h2>
         <p className="mx-auto mt-[12px] max-w-[480px] text-[14px] leading-relaxed text-muted-foreground sm:text-[16px]">
-          Kliknij „Wyjaśnij dokumenty”, aby dowiedzieć się, co oznaczają
-          przesłane pisma.
+          {t("explain.readyBody")}
         </p>
         <div className="relative mx-auto mt-[32px] flex w-full max-w-[444px]">
           <svg
@@ -99,11 +100,11 @@ export function DocumentExplanationReadyState({
               );
             })}
           </svg>
-          {explanationDetails.map(({ icon, title }) => (
+          {explanationDetails.map(({ icon, titleKey }) => (
             <div
-              key={title}
+              key={icon}
               role="img"
-              aria-label={title}
+              aria-label={t(titleKey)}
               tabIndex={0}
               onPointerEnter={(event) => {
                 if (event.pointerType === "mouse") setHoveredIcon(icon);
@@ -123,13 +124,13 @@ export function DocumentExplanationReadyState({
           ))}
         </div>
         <ul className="mx-auto mt-[24px] grid w-full max-w-[580px] grid-cols-1 gap-[24px] @[400px]:grid-cols-3 @[400px]:gap-[16px]">
-          {explanationDetails.map(({ title, description }) => (
-            <li key={title} className="mx-auto w-full min-w-0 max-w-[240px]">
+          {explanationDetails.map(({ icon, titleKey, descriptionKey }) => (
+            <li key={icon} className="mx-auto w-full min-w-0 max-w-[240px]">
               <h3 className="text-[16px] leading-[24px] @[600px]:text-[18px] @[600px]:leading-[26px]">
-                {title}
+                {t(titleKey)}
               </h3>
               <p className="mt-[8px] text-[15px] leading-[24px] text-muted-foreground">
-                {description}
+                {t(descriptionKey)}
               </p>
             </li>
           ))}
@@ -140,7 +141,7 @@ export function DocumentExplanationReadyState({
             onClick={onExplainDocuments}
             className="mt-8 min-h-12 w-full max-w-[360px] rounded-2xl px-4 py-3 text-[16px] font-bold whitespace-normal lg:hidden"
           >
-            Wyjaśnij dokumenty
+            {t("explain.action")}
           </Button>
         )}
       </div>

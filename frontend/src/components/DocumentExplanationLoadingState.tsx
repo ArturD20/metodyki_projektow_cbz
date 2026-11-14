@@ -6,6 +6,7 @@ import {
   type MotionValue,
 } from "motion/react";
 import { useEffect, useSyncExternalStore } from "react";
+import { useTranslation } from "react-i18next";
 
 import avatar from "@/assets/prostefakty-avatar.svg";
 import {
@@ -52,6 +53,7 @@ function WritingLine({
 }
 
 export function DocumentExplanationLoadingState() {
+  const { t } = useTranslation();
   const reducedMotion = useSyncExternalStore(
     subscribeToReducedMotion,
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -75,7 +77,7 @@ export function DocumentExplanationLoadingState() {
 
   return (
     <section
-      aria-label="Przygotowywanie wyjaśnień dokumentów"
+      aria-label={t("explain.preparing")}
       className="reading-surface flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center gap-6 overflow-y-auto rounded-[24px] p-6 lg:p-8"
     >
       <svg
@@ -112,10 +114,10 @@ export function DocumentExplanationLoadingState() {
       </svg>
       <div className="text-center">
         <h2 role="status" className="text-[20px] sm:text-[24px]">
-          Wyjaśniam dokumenty…
+          {t("explain.pending")}
         </h2>
         <p className="mt-[8px] text-[14px] leading-relaxed text-muted-foreground">
-          Za chwilę zobaczysz najważniejsze informacje.
+          {t("explain.soon")}
         </p>
       </div>
     </section>

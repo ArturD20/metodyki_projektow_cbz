@@ -1,1 +1,68 @@
-{}
+{
+  "appName": "ProsteFakty",
+  "nav": {
+    "label": "Nawigacja główna",
+    "documents": "Dokumenty",
+    "section2": "Sekcja 2",
+    "section3": "Sekcja 3",
+    "collapse": "Zwiń nawigację",
+    "expand": "Rozwiń nawigację"
+  },
+  "theme": {
+    "light": "Włącz jasny motyw",
+    "dark": "Włącz ciemny motyw"
+  },
+  "header": {
+    "showDocuments": "Pokaż dokumenty"
+  },
+  "language": {
+    "label": "Język"
+  },
+  "upload": {
+    "dropHere": "Upuść pliki tutaj, aby przesłać",
+    "addDocuments": "Dodaj dokumenty",
+    "addDocument": "Dodaj dokument",
+    "or": "lub",
+    "fromDevice": "Prześlij z urządzenia",
+    "formats": "Dozwolone formaty: {{formats}}",
+    "maxSize": "Maksymalny rozmiar pliku: {{maxSize}} MB",
+    "someRejected": "Nie dodano niektórych plików",
+    "addedDocuments": "Dodane dokumenty",
+    "close": "Zamknij"
+  },
+  "explain": {
+    "action": "Wyjaśnij dokumenty",
+    "pending": "Wyjaśniam dokumenty…",
+    "preparing": "Przygotowywanie wyjaśnień dokumentów",
+    "soon": "Za chwilę zobaczysz najważniejsze informacje.",
+    "readyTitle": "Dokumenty gotowe do wyjaśnienia",
+    "readyBody": "Kliknij „$t(explain.action)”, aby dowiedzieć się, co oznaczają przesłane pisma.",
+    "simpleTitle": "Proste wyjaśnienie",
+    "simpleDescription": "Najważniejsze informacje z dokumentów.",
+    "stepsTitle": "Kolejne kroki",
+    "stepsDescription": "Co trzeba zrobić dalej.",
+    "deadlinesTitle": "Ważne terminy",
+    "deadlinesDescription": "Na co zwrócić uwagę.",
+    "explanationsTitle": "Wyjaśnienia dokumentów",
+    "explanations": "Wyjaśnienia",
+    "ask": "Zapytaj o dokumenty",
+    "askPlaceholder": "Zapytaj o dokumenty...",
+    "send": "Wyślij pytanie",
+    "actions": "Co zrobić",
+    "deadlines": "Terminy",
+    "passages": "Fragmenty z pisma"
+  },
+  "document": {
+    "label": "Dokument {{number}}: {{name}}",
+    "preview": "Podgląd dokumentu {{number}}",
+    "file": "PLIK"
+  },
+  "errors": {
+    "unsupportedType": "„{{name}}”: wybierz plik DOC, DOCX lub PDF.",
+    "tooLarge": "„{{name}}”: plik przekracza maksymalny rozmiar {{maxSize}} MB.",
+    "pdfOnly": "„{{name}}”: na razie można wyjaśnić tylko plik PDF.",
+    "noText": "„{{name}}”: brak tekstu do wyjaśnienia.",
+    "offline": "Nie można połączyć się z serwerem.",
+    "explainFailed": "Nie udało się wyjaśnić dokumentów."
+  }
+}
