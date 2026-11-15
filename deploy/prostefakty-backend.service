@@ -1,0 +1,14 @@
+[Unit]
+Description=ProsteFakty FastAPI backend
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/opt/prostefakty/backend
+EnvironmentFile=/opt/prostefakty/.env
+ExecStart=/opt/prostefakty/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
