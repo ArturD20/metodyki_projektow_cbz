@@ -30,9 +30,9 @@ jobs:
       # The Gemini client is mocked in tests; no real key or AI call is used.
       # backend/tests/test_prompts.py only forwards to tests/test_prompts.py in the
       # repository root and fails to import when run from backend/, so it is skipped here.
-      - run: pytest tests/ --ignore=tests/test_prompts.py
+      - run: python -m pytest tests/ --ignore=tests/test_prompts.py
       # Prompt and AI-output tests live in the repository root.
-      - run: pytest tests/
+      - run: python -m pytest tests/
         working-directory: .
 
   frontend:
