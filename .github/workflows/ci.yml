@@ -28,7 +28,12 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - run: pip install -r requirements.txt pytest httpx
       # The Gemini client is mocked in tests; no real key or AI call is used.
-      - run: pytest tests/
+      # backend/tests/test_prompts.py only forwards to tests/test_prompts.py in the
+      # repository root and fails to import when run from backend/, so it is skipped here.
+      - run: python -m pytest tests/ --ignore=tests/test_prompts.py
+      # Prompt and AI-output tests live in the repository root.
+      - run: python -m pytest tests/
+        working-directory: .
 
   frontend:
     name: Frontend (lint, typecheck, test, build)
