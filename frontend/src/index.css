@@ -165,22 +165,32 @@
   }
 }
 
+@utility glass-surface {
+  border: 1px solid var(--glass-edge);
+  background: var(--glass-fill);
+  box-shadow: var(--glass-highlight), var(--shadow-glass);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+
+  @media (prefers-reduced-transparency: reduce) {
+    background: var(--glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    background: var(--glass-solid);
+  }
+}
+
+@utility reading-surface {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow-panel);
+}
+
 @layer components {
-  .glass-surface {
-    border: 1px solid var(--glass-edge);
-    background: var(--glass-fill);
-    box-shadow: var(--glass-highlight), var(--shadow-glass);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-  }
-
-  .reading-surface {
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--card-foreground);
-    box-shadow: var(--shadow-panel);
-  }
-
   .document-paper {
     border: 1px solid var(--border);
     background: var(--paper);
@@ -240,7 +250,11 @@
     position: absolute;
     inset: 0 8px 0 0;
     content: "";
-    background: linear-gradient(to bottom, transparent, var(--card) 65%);
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--reading-background, var(--card)) 65%
+    );
   }
 
   .chat-composer {
@@ -280,13 +294,11 @@
 
 @media (prefers-reduced-transparency: reduce) {
   .chat-composer-overlay::before {
-    background: linear-gradient(to bottom, transparent, var(--card) 40%);
-  }
-
-  .glass-surface {
-    background: var(--glass-solid);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--reading-background, var(--card)) 40%
+    );
   }
 
   .button-raised,
@@ -295,15 +307,9 @@
   }
 }
 
-@supports not (backdrop-filter: blur(1px)) {
-  .glass-surface {
-    background: var(--glass-solid);
-  }
-}
-
 @media (prefers-contrast: more) {
   .chat-composer-overlay::before {
-    background: var(--card);
+    background: var(--reading-background, var(--card));
   }
 
   :root {

@@ -67,7 +67,7 @@ export function MainNav({
       transition={navTransition}
       id="main-nav"
       aria-label={t("nav.label")}
-      className="glass-surface order-last mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex shrink-0 flex-row gap-1 rounded-[28px] p-1.5 sm:mx-5 lg:order-none lg:mx-0 lg:mb-0 lg:w-[calc(var(--nav-width)+4px)] lg:min-w-0 lg:flex-col lg:gap-2 lg:p-2"
+      className="order-last flex shrink-0 flex-row gap-1 border-t bg-background px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:glass-surface lg:order-none lg:w-[calc(var(--nav-width)+4px)] lg:min-w-0 lg:flex-col lg:gap-2 lg:rounded-[28px] lg:p-2"
     >
       <div
         aria-hidden="true"
@@ -99,7 +99,7 @@ export function MainNav({
           aria-controls="main-content"
           onClick={() => onSectionChange(section.id)}
           className={cn(
-            "h-14 min-w-0 flex-1 flex-col gap-1 rounded-[22px] px-1 py-2 text-[11px] lg:h-14 lg:w-full lg:min-w-0 lg:flex-none lg:flex-row lg:justify-start lg:gap-0 lg:overflow-hidden lg:px-0 lg:py-0",
+            "h-14 min-w-0 flex-1 flex-col gap-1 rounded-2xl px-1 py-2 text-[11px] lg:h-14 lg:w-full lg:min-w-0 lg:flex-none lg:flex-row lg:justify-start lg:gap-0 lg:overflow-hidden lg:rounded-[22px] lg:px-0 lg:py-0",
             activeSection !== section.id && "text-muted-foreground",
           )}
         >

@@ -98,7 +98,7 @@ export function DocumentAttachmentsState({
           fallback={
             <div
               role="status"
-              className="reading-surface flex min-h-0 flex-1 items-center justify-center rounded-[24px] p-6"
+              className="flex flex-1 items-center justify-center py-8 lg:reading-surface lg:min-h-0 lg:rounded-[24px] lg:p-6"
             >
               {t("explain.pending")}
             </div>

@@ -1,4 +1,4 @@
-export const DOCUMENT_EXTENSIONS = [".doc", ".docx", ".pdf"];
+export const DOCUMENT_EXTENSIONS = [".doc", ".docx", ".pdf", ".txt"];
 export const MAX_DOCUMENT_SIZE_MB = 10;
 
 export type DocumentUploadError =
@@ -43,7 +43,9 @@ export function validateDocuments(files: File[]) {
 }
 
 export async function readDocumentText(file: File) {
-  if (!file.name.toLowerCase().endsWith(".pdf")) {
+  const name = file.name.toLowerCase();
+  if (name.endsWith(".txt")) return (await file.text()).trim();
+  if (!name.endsWith(".pdf")) {
     throw new TranslatedError("errors.pdfOnly", { name: file.name });
   }
 
