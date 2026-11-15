@@ -1,0 +1,70 @@
+name: Deploy
+
+# Runs after CI succeeds on main, or manually from the Actions tab.
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Only one production deployment at a time.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      HOST: ${{ secrets.EC2_HOST }}
+      SSH_USER: ${{ secrets.EC2_USER }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: oven-sh/setup-bun@v2
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+        env:
+          # Same origin as the site: nginx proxies /explain and /health to the backend.
+          VITE_API_URL: /
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload files
+        run: |
+          SSH="ssh -i ~/.ssh/id_deploy"
+          rsync -az --delete -e "$SSH" \
+            --exclude '.venv' --exclude '__pycache__' --exclude 'tests' \
+            backend/ "$SSH_USER@$HOST:/opt/prostefakty/backend/"
+          rsync -az --delete -e "$SSH" \
+            frontend/dist/ "$SSH_USER@$HOST:/var/www/prostefakty/"
+          rsync -az -e "$SSH" deploy/ "$SSH_USER@$HOST:/opt/prostefakty/deploy/"
+
+      - name: Install dependencies and restart
+        run: ssh -i ~/.ssh/id_deploy "$SSH_USER@$HOST" 'bash /opt/prostefakty/deploy/deploy.sh'
+
+      - name: Health check
+        run: |
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS "http://$HOST/health"; then exit 0; fi
+            sleep 3
+          done
+          echo "Health check failed" >&2
+          exit 1
