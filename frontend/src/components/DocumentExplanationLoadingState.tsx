@@ -78,7 +78,7 @@ export function DocumentExplanationLoadingState() {
   return (
     <section
       aria-label={t("explain.preparing")}
-      className="reading-surface flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center gap-6 overflow-y-auto rounded-[24px] p-6 lg:p-8"
+      className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 py-8 lg:reading-surface lg:min-h-0 lg:overflow-y-auto lg:rounded-[24px] lg:p-8"
     >
       <svg
         aria-hidden="true"

@@ -41,6 +41,8 @@ export function Main() {
       : explainDocuments.isSuccess
         ? "explained"
         : "ready";
+  const isReadingState =
+    activeSection === "documents" && explanationStatus === "explained";
   const visibleErrors = [
     ...uploadErrors.map((error) =>
       t(error.key, {
@@ -86,7 +88,10 @@ export function Main() {
       />
       <div
         inert={documentsOpen || undefined}
-        className="flex h-dvh flex-col gap-3 overflow-hidden lg:flex-row lg:gap-6 lg:py-6 lg:pl-3"
+        className={cn(
+          "flex min-h-dvh flex-col gap-3 lg:h-dvh lg:min-h-0 lg:flex-row lg:gap-6 lg:overflow-hidden lg:py-6 lg:pl-3",
+          isReadingState && "h-dvh min-h-0 overflow-hidden",
+        )}
       >
         <MainNav
           activeSection={activeSection}
@@ -106,7 +111,12 @@ export function Main() {
                 : undefined
             }
           />
-          <main className="flex min-h-0 flex-1 flex-col gap-3 px-3 sm:px-5 lg:px-0 lg:pr-8 lg:pb-0">
+          <main
+            className={cn(
+              "flex min-h-0 flex-1 flex-col gap-3 px-4 pb-8 sm:px-5 lg:px-0 lg:pr-8 lg:pb-0",
+              isReadingState && "pb-0",
+            )}
+          >
             <section
               id="main-content"
               aria-labelledby={
@@ -134,10 +144,10 @@ export function Main() {
               className={cn(
                 "order-first flex min-h-0 min-w-0 flex-col lg:order-none",
                 isUploadState
-                  ? "reading-surface my-auto max-h-full w-full max-w-[720px] flex-initial items-center self-center overflow-y-auto rounded-[24px] px-5 py-8 sm:px-10 sm:py-12 lg:py-14"
+                  ? "my-auto w-full max-w-[720px] flex-initial items-center self-center py-10 sm:py-12 lg:reading-surface lg:max-h-full lg:overflow-y-auto lg:rounded-[24px] lg:px-10 lg:py-14"
                   : "flex-1",
                 activeSection !== "documents" &&
-                  "reading-surface items-center justify-center rounded-[24px] px-4 py-10",
+                  "items-center justify-center py-10 lg:reading-surface lg:rounded-[24px] lg:px-4",
               )}
             >
               {activeSection === "documents" ? (

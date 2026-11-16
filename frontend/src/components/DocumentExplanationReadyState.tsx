@@ -49,7 +49,7 @@ export function DocumentExplanationReadyState({
   return (
     <section
       aria-labelledby="document-explanation-title"
-      className="reading-surface @container flex min-h-0 w-full flex-1 flex-col items-center overflow-y-auto rounded-[24px] px-5 py-8 sm:px-8 lg:min-w-0 lg:p-10"
+      className="@container flex w-full min-w-0 flex-1 flex-col items-center py-6 sm:py-8 lg:reading-surface lg:min-h-0 lg:overflow-y-auto lg:rounded-[24px] lg:p-10"
     >
       <div className="my-auto w-full max-w-[760px] shrink-0 text-center">
         <div className="button-raised mx-auto mb-6 flex size-20 items-center justify-center rounded-[24px] border text-primary">
@@ -64,7 +64,16 @@ export function DocumentExplanationReadyState({
         <p className="mx-auto mt-[12px] max-w-[480px] text-[14px] leading-relaxed text-muted-foreground sm:text-[16px]">
           {t("explain.readyBody")}
         </p>
-        <div className="relative mx-auto mt-[32px] flex w-full max-w-[444px]">
+        {onExplainDocuments && (
+          <Button
+            type="button"
+            onClick={onExplainDocuments}
+            className="mt-6 min-h-12 w-full max-w-[360px] rounded-2xl px-4 py-3 text-[16px] font-bold whitespace-normal lg:hidden"
+          >
+            {t("explain.action")}
+          </Button>
+        )}
+        <div className="relative mx-auto mt-[32px] hidden w-full max-w-[444px] lg:flex">
           <svg
             aria-hidden="true"
             viewBox="0 0 600 200"
@@ -123,27 +132,26 @@ export function DocumentExplanationReadyState({
             </div>
           ))}
         </div>
-        <ul className="mx-auto mt-[24px] grid w-full max-w-[580px] grid-cols-1 gap-[24px] @[400px]:grid-cols-3 @[400px]:gap-[16px]">
+        <ul className="mx-auto mt-8 grid w-full max-w-[420px] grid-cols-1 gap-5 lg:mt-[24px] lg:max-w-[580px] lg:gap-[24px] lg:@[400px]:grid-cols-3 lg:@[400px]:gap-[16px]">
           {explanationDetails.map(({ icon, titleKey, descriptionKey }) => (
-            <li key={icon} className="mx-auto w-full min-w-0 max-w-[240px]">
-              <h3 className="text-[16px] leading-[24px] @[600px]:text-[18px] @[600px]:leading-[26px]">
-                {t(titleKey)}
-              </h3>
-              <p className="mt-[8px] text-[15px] leading-[24px] text-muted-foreground">
-                {t(descriptionKey)}
-              </p>
+            <li
+              key={icon}
+              className="flex w-full min-w-0 items-start gap-3 text-left lg:mx-auto lg:block lg:max-w-[240px] lg:text-center"
+            >
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary lg:hidden">
+                <AnimatedExplanationIcon name={icon} active={false} />
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-[16px] leading-[24px] @[600px]:text-[18px] @[600px]:leading-[26px]">
+                  {t(titleKey)}
+                </h3>
+                <p className="mt-1 text-[15px] leading-[24px] text-muted-foreground lg:mt-[8px]">
+                  {t(descriptionKey)}
+                </p>
+              </div>
             </li>
           ))}
         </ul>
-        {onExplainDocuments && (
-          <Button
-            type="button"
-            onClick={onExplainDocuments}
-            className="mt-8 min-h-12 w-full max-w-[360px] rounded-2xl px-4 py-3 text-[16px] font-bold whitespace-normal lg:hidden"
-          >
-            {t("explain.action")}
-          </Button>
-        )}
       </div>
     </section>
   );

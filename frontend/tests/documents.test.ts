@@ -1,15 +1,22 @@
 import { describe, expect, test } from "bun:test";
 
-import { MAX_DOCUMENT_SIZE_MB, validateDocuments } from "../src/lib/documents";
+import {
+  MAX_DOCUMENT_SIZE_MB,
+  readDocumentText,
+  TranslatedError,
+  validateDocuments,
+} from "../src/lib/documents";
 
 describe("document upload validation", () => {
-  test("accepts Word and PDF files, including uppercase extensions and empty MIME types", () => {
+  test("accepts Word, PDF, and TXT files, including uppercase extensions and empty MIME types", () => {
     const files = [
       "pismo.doc",
       "wniosek.docx",
       "decyzja.pdf",
+      "notatka.txt",
       "PISMO.DOCX",
       "DECYZJA.PDF",
+      "NOTATKA.TXT",
     ].map((name) => new File(["document"], name));
 
     expect(validateDocuments(files)).toEqual({ accepted: files, errors: [] });
@@ -18,9 +25,9 @@ describe("document upload validation", () => {
   test("rejects unsupported files, missing extensions, and disguised extensions", () => {
     const files = [
       "zdjęcie.png",
-      "notatka.txt",
       "dokument",
       "decyzja.pdf.exe",
+      "notatka.txt.exe",
     ].map((name) => new File(["document"], name));
     const result = validateDocuments(files);
 
@@ -76,5 +83,26 @@ describe("document upload validation", () => {
 
   test("handles an empty selection without errors", () => {
     expect(validateDocuments([])).toEqual({ accepted: [], errors: [] });
+  });
+});
+
+describe("document text", () => {
+  test("reads TXT content, including Polish characters and uppercase extension", async () => {
+    const text = "Zażółć gęślą jaźń.\nTermin: 7 dni.";
+    const file = new File([text], "NOTATKA.TXT");
+
+    expect(await readDocumentText(file)).toBe(text);
+  });
+
+  test("returns empty text for a blank TXT file", async () => {
+    expect(await readDocumentText(new File(["  \n"], "pusta.txt"))).toBe("");
+  });
+
+  test("refuses Word files that cannot be read yet", async () => {
+    const file = new File(["document"], "pismo.docx");
+
+    await expect(readDocumentText(file)).rejects.toEqual(
+      new TranslatedError("errors.pdfOnly", { name: file.name }),
+    );
   });
 });

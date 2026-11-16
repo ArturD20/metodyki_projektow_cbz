@@ -18,12 +18,12 @@ export function DocumentExplainedState({
   return (
     <section
       aria-labelledby="document-explanations-title"
-      className="reading-surface @container isolate grid min-h-0 min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden rounded-[24px] [--chat-inset:16px] sm:[--chat-inset:24px] lg:[--chat-inset:32px]"
+      className="@container isolate grid min-h-0 min-w-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] overflow-hidden [--chat-inset:0px] [--reading-background:var(--background)] lg:reading-surface lg:rounded-[24px] lg:[--chat-inset:32px] lg:[--reading-background:var(--card)]"
     >
       <h2 id="document-explanations-title" className="sr-only">
         {t("explain.explanationsTitle")}
       </h2>
-      <div className="styled-scrollbar col-start-1 row-start-1 min-h-0 min-w-0 scroll-pb-[144px] overflow-y-auto px-[var(--chat-inset)] pt-[var(--chat-inset)] pb-[calc(144px+var(--chat-inset))]">
+      <div className="styled-scrollbar col-start-1 row-start-1 min-h-0 min-w-0 scroll-pb-[144px] overflow-y-auto px-[var(--chat-inset)] pt-4 pb-[calc(144px+var(--chat-inset))] lg:pt-[var(--chat-inset)]">
         <div className="mx-auto w-full max-w-[680px]">
           <p className="mb-[20px] hidden text-[12px] text-muted-foreground lg:block">
             {t("explain.explanations")}
@@ -36,7 +36,7 @@ export function DocumentExplainedState({
               return (
                 <article
                   key={index}
-                  className="grid grid-cols-[100px_minmax(0,1fr)] items-start gap-x-3 gap-y-4 lg:grid-cols-1 lg:gap-x-[24px] lg:gap-y-[20px] lg:@[360px]:grid-cols-[100px_minmax(0,1fr)] lg:@[500px]:grid-cols-[122px_minmax(0,1fr)]"
+                  className="grid grid-cols-[64px_minmax(0,1fr)] items-start gap-x-3 gap-y-4 sm:grid-cols-[100px_minmax(0,1fr)] lg:grid-cols-1 lg:gap-x-[24px] lg:gap-y-[20px] lg:@[360px]:grid-cols-[100px_minmax(0,1fr)] lg:@[500px]:grid-cols-[122px_minmax(0,1fr)]"
                 >
                   <div className="lg:hidden">
                     <DocumentCard
@@ -49,11 +49,11 @@ export function DocumentExplainedState({
                   <div className="hidden w-[100px] lg:block lg:@[500px]:w-[122px]">
                     <DocumentAttachmentPreview file={file} number={index + 1} />
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="text-[18px] leading-snug wrap-anywhere @[500px]:text-[20px]">
+                  <div className="contents lg:block lg:min-w-0">
+                    <h3 className="min-w-0 text-[18px] leading-snug wrap-anywhere @[500px]:text-[20px]">
                       {file.name}
                     </h3>
-                    <p className="mt-[12px] text-[16px] leading-[26px] whitespace-pre-wrap @[500px]:text-[18px]">
+                    <p className="col-span-2 text-[16px] leading-[26px] whitespace-pre-wrap @[500px]:text-[18px] lg:mt-[12px]">
                       {explanation.explanation}
                     </p>
                   </div>
@@ -64,7 +64,7 @@ export function DocumentExplainedState({
           </div>
         </div>
       </div>
-      <div className="chat-composer-overlay pointer-events-none relative z-10 col-start-1 row-start-1 w-full self-end px-[var(--chat-inset)] pt-[64px] pb-[var(--chat-inset)]">
+      <div className="chat-composer-overlay pointer-events-none relative z-10 col-start-1 row-start-1 w-full self-end px-[var(--chat-inset)] pt-[64px] pb-3 lg:pb-[var(--chat-inset)]">
         <div className="chat-composer pointer-events-auto relative mx-auto flex w-full max-w-[680px] min-w-0 items-center gap-[8px] rounded-full py-[4px] pr-[4px] pl-[16px] focus-within:outline-2 focus-within:outline-offset-3 focus-within:outline-ring">
           <input
             type="text"

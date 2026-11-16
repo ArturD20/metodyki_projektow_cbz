@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
@@ -20,42 +21,64 @@ export function LanguageSwitch() {
   const language = currentLanguage(i18n.resolvedLanguage);
 
   return (
-    <div
-      role="group"
-      aria-label={t("language.label")}
-      className="button-raised flex h-11 items-center gap-0.5 rounded-2xl border p-1 select-none"
-    >
-      {languages.map((code) => (
-        <button
-          key={code}
-          type="button"
-          lang={code}
-          aria-label={languageNames[code].full}
-          aria-pressed={language === code}
-          title={languageNames[code].full}
-          onClick={() => setLanguage(code)}
-          className={cn(
-            "relative h-full min-w-10 rounded-xl px-2 text-sm font-bold outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-            language === code
-              ? "text-primary-foreground"
-              : "text-muted-foreground hover:text-foreground",
-          )}
+    <>
+      <div className="button-raised relative flex h-11 w-[68px] shrink-0 items-center justify-center gap-1 rounded-2xl border focus-within:outline-2 focus-within:outline-offset-3 focus-within:outline-ring lg:hidden">
+        <span aria-hidden="true" className="text-sm font-bold">
+          {languageNames[language].short}
+        </span>
+        <ChevronDown aria-hidden="true" className="size-3.5" />
+        <select
+          aria-label={t("language.label")}
+          value={language}
+          onChange={(event) =>
+            setLanguage(currentLanguage(event.currentTarget.value))
+          }
+          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
         >
-          {language === code && (
-            <motion.span
-              layoutId="language-switch-active"
-              aria-hidden="true"
-              transition={
-                reducedMotion
-                  ? { duration: 0 }
-                  : { type: "spring", bounce: 0.2, duration: 0.35 }
-              }
-              className="button-primary absolute inset-0 rounded-xl border"
-            />
-          )}
-          <span className="relative">{languageNames[code].short}</span>
-        </button>
-      ))}
-    </div>
+          {languages.map((code) => (
+            <option key={code} value={code} lang={code}>
+              {languageNames[code].full}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div
+        role="group"
+        aria-label={t("language.label")}
+        className="button-raised hidden h-11 items-center gap-0.5 rounded-2xl border p-1 select-none lg:flex"
+      >
+        {languages.map((code) => (
+          <button
+            key={code}
+            type="button"
+            lang={code}
+            aria-label={languageNames[code].full}
+            aria-pressed={language === code}
+            title={languageNames[code].full}
+            onClick={() => setLanguage(code)}
+            className={cn(
+              "relative h-full min-w-10 rounded-xl px-2 text-sm font-bold outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              language === code
+                ? "text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {language === code && (
+              <motion.span
+                layoutId="language-switch-active"
+                aria-hidden="true"
+                transition={
+                  reducedMotion
+                    ? { duration: 0 }
+                    : { type: "spring", bounce: 0.2, duration: 0.35 }
+                }
+                className="button-primary absolute inset-0 rounded-xl border"
+              />
+            )}
+            <span className="relative">{languageNames[code].short}</span>
+          </button>
+        ))}
+      </div>
+    </>
   );
 }
